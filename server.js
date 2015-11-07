@@ -10,14 +10,18 @@ server.use(bodyParser.urlencoded({'extended': true}));
 
 server.use(express.static('src'));
 server.use(express.static('node_modules'));
+server.use(express.static('bower_components'));
 
-server.listen(8000);
+// server.listen(process.env.OPENSHIFT_NODEJS_PORT || 8080);
+server.listen(process.env.OPENSHIFT_NODEJS_PORT || 8080, process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1', function(){
+  console.log("Listening on " + process.env.OPENSHIFT_NODEJS_PORT || 8080 + ", server_port " + process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1')
+});
 console.log('Server Started');
 
 //PARSE CODE & Game Table Selection ADD THE PARSE KEY!!!!!!
 
-var GameInfo = Parse.Object.extend("Game");
-var query = new Parse.Query(GameInfo);
+//var GameInfo = Parse.Object.extend("Game");
+//var query = new Parse.Query(GameInfo);
 
 
 server.post('/parseRequester', function (req, res){
@@ -27,17 +31,22 @@ server.post('/parseRequester', function (req, res){
 
 
   //Checks for Game ID
+    var GameInfo = Parse.Object.extend("Game");
+    var query = new Parse.Query(GameInfo);
   query.equalTo('shortId', requestData.gameCode);
   query.find({
       success: function(results) {
-        if(results.length >= 1){
+        if(results.length >= 1) {
+            var response = {};
+            response.gameCode = requestData.gameCode;
+            response.name = requestData.name;
           console.log("game found at short Id: " + requestData.gameCode);
 
           //If Game exists then create new user
           var UserInfo = Parse.Object.extend("Users");
           var userInfo = new UserInfo();
-          userInfo.set('name', requestData.name);
-          userInfo.set('inGame', requestData.gameCode);
+          userInfo.set('name', response.name);
+          userInfo.set('inGame', response.gameCode);
           userInfo.set('onRound', 0);
           userInfo.save(null, {
             success: function(userInfo){
@@ -46,11 +55,11 @@ server.post('/parseRequester', function (req, res){
               //Save User Object ID in the Game's Players
               results[0].addUnique("players", userInfo.id);
               results[0].save();
-              requestData.inGame = true;
+              response.inGame = true;
               console.log(userInfo.id);
-              requestData.objectId = userInfo.id;
+              response.objectId = userInfo.id;
                 //confirm with front end that user is in game lobby
-                res.send(requestData);
+                res.send(response);
             },
             error: function(userInfo, error){
               for (var key in error){console.log(key)};
@@ -68,13 +77,18 @@ server.post('/parseRequester', function (req, res){
 
 server.post('/round', function (req, res){
   //console.log(req.body.userData);
-  requestData = req.body.userData;
+  var requestData = req.body.userData;
+    var GameInfo = Parse.Object.extend("Game");
+    var query = new Parse.Query(GameInfo);
   query.equalTo('shortId', requestData.gameCode);
   query.find({
       success: function(results) {
-        requestData.currentRound = results[0].get('onRound');
-        requestData.songs = results[0].get('songNames');
-        res.send(requestData);
+          var response = {};
+          response.currentRound = results[0].get('onRound');
+          response.songs = results[0].get('songNames');
+        //requestData.currentRound = results[0].get('onRound');
+        //requestData.songs = results[0].get('songNames');
+        res.send(response);
       },
       error: function(error) {
 

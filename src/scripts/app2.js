@@ -4,6 +4,7 @@ angular
   .controller('hackController', function($http){
 
     var self = this;
+    self.waiting = false;
     console.log(self);
     self.inGame = false;
     self.songList = [];
@@ -27,6 +28,7 @@ angular
             self.inGame = res.data.inGame;
             console.log('In Lobby - Initializing Game Checks');
             ajaxData.currentRound = 0;
+            self.waiting = true;
             ajaxData.objectId = res.data.objectId;
             self.gameHandler();
 
@@ -43,8 +45,12 @@ angular
               $http.post('/round', {'userData': ajaxData})
                 .then(function(res){
                   console.log(res.data);
-                  ajaxData = res.data;
+                      ajaxData.currentRound = res.data.currentRound;
+                      if(ajaxData.currentRound > 0){self.waiting = false;}
+                      ajaxData.songs = res.data.songs;
+                  //ajaxData = res.data;
                   self.songList = ajaxData.songs;
+                      console.log("YOU: " + ajaxData.name);
                   if(ajaxData.currentRound == -1){location.reload()};
 
                 });
