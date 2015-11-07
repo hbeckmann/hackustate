@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html ng-app='hackustate'>
+  <head>
+    <meta charset="utf-8">
+    <title>Listenify</title>
+  </head>
+  <body ng-controller='hackController as hack'>
+    <form ng-show="!hack.inGame">
+      <label>Name: </label><input type="text" ng-model='hack.name' /></br>
+      <label>Game Code: </label><input type="text" ng-model='hack.gameCode' style="text-transform:uppercase" maxlength="4"/></br>
+      <button ng-click='hack.handler(hack.name, hack.gameCode.toUpperCase());'>Submit</button>
+    </form>
+
+    <div song-names></div>
+    <div ng-repeat="song in hack.songList" ng-click="hack.songSelect(song)">{{song}}</div>
+    <script src="/angular/angular.js"></script>
+    <script src="scripts/app2.js"></script>
+
+
+
+  </body>
+</html>
