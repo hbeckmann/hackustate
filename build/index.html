@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html ng-app='hackustate'>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Tune Teaser</title>
+    <link href="/styles/phone.min.css" rel="stylesheet" type="text/css">
+    <link href="/styles/desktop.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <link href="bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
+  </head>
+  <body ng-controller='hackController as hack'>
+
+    <div class="tuneContainer" style='margin-top:70px;'>
+
+    <nav class="navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header"><a class="">Tune Teaser</a></div>
+      </div>
+    </nav>
+
+    <div class="">
+    <form class=" form-horizontal userForm" ng-show="!hack.inGame">
+      <div class="form-group">
+        <label class="">Name: </label></br><input class="" autofocus type="text" ng-model='hack.name' /></br>
+      </div>
+      <div class="form-group">
+      <label class="">Game Code: </label></br><input class="" type="text" ng-model='hack.gameCode' style="text-transform:uppercase" maxlength="4"/></br>
+      </div>
+      <div class="form-group">
+        <div class=""></div><button class="btn btn-info" type="submit" ng-click='hack.handler(hack.name, hack.gameCode.toUpperCase());'>Submit</button>
+      </div>
+      </form>
+    </div>
+
+    <div ng-show="hack.waiting" class="waiting">Waiting for game to start!</div>
+
+    <div class="row">
+      <btn class="songs song btn btn-info clearfix" ng-repeat="song in hack.songList" ng-click="hack.songSelect(song)">{{song}}</btn>
+    </div>
+  </div>
+
+
+    <script src="/angular/angular.js"></script>
+    <script src="scripts/app.min.js"></script>
+
+
+
+  </body>
+</html>

@@ -8,7 +8,7 @@ server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({'extended': true}));
 
 
-server.use(express.static('src'));
+server.use(express.static('build'));
 server.use(express.static('node_modules'));
 server.use(express.static('bower_components'));
 

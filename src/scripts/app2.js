@@ -1,7 +1,7 @@
 angular
   .module('hackustate', [])
 
-  .controller('hackController', function($http){
+  .controller('hackController', ['$http', function($http){
 
     var self = this;
     self.waiting = false;
@@ -74,7 +74,7 @@ angular
         });
 
     };
-  })
+  }])
   /*
   .directive('hackDirectives', function(){
     return {
